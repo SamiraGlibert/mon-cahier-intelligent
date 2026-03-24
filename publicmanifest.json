@@ -1,1 +1,16 @@
 
+{
+  "name": "Mon Cahier Intelligent",
+  "short_name": "Mon Cahier",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0e0c",
+  "theme_color": "#d85a30",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
