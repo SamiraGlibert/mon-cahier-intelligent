@@ -717,271 +717,194 @@ function rfc(){
 }
 
 
-// ══ CALCULATRICE ══
-let calcVal='0', calcOp2='', calcPrev='', calcNew=false;
+
+// CALCULATRICE
+var cVal='0',cOp='',cPrev='',cNew=false;
 function calcNum(n){
-  if(calcNew){calcVal=n;calcNew=false;}
-  else{calcVal=calcVal==='0'?n:calcVal+n;}
-  document.getElementById('calc-display').textContent=calcVal;
+  if(cNew){cVal=n;cNew=false;}
+  else{cVal=cVal==='0'?n:cVal+n;}
+  document.getElementById('calc-display').textContent=cVal;
 }
 function calcOp(op){
-  calcPrev=calcVal;calcOp2=op;calcNew=true;
-  document.getElementById('calc-display').textContent=calcVal+' '+{'+':'+','−':'-','*':'×','/':'÷'}[op];
+  cPrev=cVal;cOp=op;cNew=true;
+  var ops={'+':'+','-':'-','*':'x','/':'/'};
+  document.getElementById('calc-display').textContent=cVal+' '+ops[op];
 }
 function calcEq(){
-  if(!calcOp2||!calcPrev)return;
-  const a=parseFloat(calcPrev),b=parseFloat(calcVal);
-  let r;
-  if(calcOp2==='+')r=a+b;else if(calcOp2==='-')r=a-b;else if(calcOp2==='*')r=a*b;else if(calcOp2==='/')r=b!==0?a/b:'Erreur';
-  calcVal=typeof r==='number'?parseFloat(r.toFixed(10)).toString():r;
-  calcOp2='';calcPrev='';calcNew=true;
-  document.getElementById('calc-display').textContent=calcVal;
+  if(!cOp||!cPrev)return;
+  var a=parseFloat(cPrev),b=parseFloat(cVal),r;
+  if(cOp==='+')r=a+b;
+  else if(cOp==='-')r=a-b;
+  else if(cOp==='*')r=a*b;
+  else r=b!==0?a/b:'Erreur';
+  cVal=typeof r==='number'?String(parseFloat(r.toFixed(8))):r;
+  cOp='';cPrev='';cNew=true;
+  document.getElementById('calc-display').textContent=cVal;
 }
 function calcFn(fn){
-  if(fn==='C'){calcVal='0';calcOp2='';calcPrev='';calcNew=false;document.getElementById('calc-display').textContent='0';}
-  else if(fn==='+/-'){calcVal=String(-parseFloat(calcVal));document.getElementById('calc-display').textContent=calcVal;}
-  else if(fn==='%'){calcVal=String(parseFloat(calcVal)/100);document.getElementById('calc-display').textContent=calcVal;}
+  if(fn==='C'){cVal='0';cOp='';cPrev='';cNew=false;document.getElementById('calc-display').textContent='0';}
+  else if(fn==='+/-'){cVal=String(-parseFloat(cVal));document.getElementById('calc-display').textContent=cVal;}
+  else if(fn==='%'){cVal=String(parseFloat(cVal)/100);document.getElementById('calc-display').textContent=cVal;}
 }
 
-// ══ TO-DO LIST ══
-let todos=JSON.parse(localStorage.getItem('mci_todos')||'[]');
+// TO-DO LIST
+var todos=JSON.parse(localStorage.getItem('mci_todos')||'[]');
 function saveTodos(){localStorage.setItem('mci_todos',JSON.stringify(todos));}
 function addTodo(){
-  const v=document.getElementById('todo-inp').value.trim();
+  var v=document.getElementById('todo-inp').value.trim();
   if(!v)return;
   todos.push({id:Date.now(),text:v,done:false});
   saveTodos();renderTodos();
   document.getElementById('todo-inp').value='';
 }
-function toggleTodo(id){const t=todos.find(t=>t.id===id);if(t){t.done=!t.done;saveTodos();renderTodos();}}
-function delTodo(id){todos=todos.filter(t=>t.id!==id);saveTodos();renderTodos();}
+function toggleTodo(id){
+  var t=todos.find(function(t){return t.id===id;});
+  if(t){t.done=!t.done;saveTodos();renderTodos();}
+}
+function delTodo(id){
+  todos=todos.filter(function(t){return t.id!==id;});
+  saveTodos();renderTodos();
+}
 function renderTodos(){
-  const el=document.getElementById('todo-list');
-  if(!todos.length){el.innerHTML='<div style="font-size:.82rem;color:var(--muted);text-align:center;padding:.75rem">Aucune tâche — ajoutes-en une !</div>';return;}
-  el.innerHTML=todos.map(t=>`<div class="todo-item"><input type="checkbox" class="todo-cb" ${t.done?'checked':''} onchange="toggleTodo(${t.id})"><span class="todo-txt ${t.done?'done':''}">${t.text}</span><button class="todo-del" onclick="delTodo(${t.id})">✕</button></div>`).join('');
+  var el=document.getElementById('todo-list');
+  if(!todos.length){el.innerHTML='<div style="font-size:.82rem;color:var(--muted);text-align:center;padding:.75rem">Aucune tache</div>';return;}
+  el.innerHTML=todos.map(function(t){
+    return '<div class="todo-item"><input type="checkbox" class="todo-cb" '+(t.done?'checked':'')+' onchange="toggleTodo('+t.id+')"><span class="todo-txt '+(t.done?'done':'')+'">'+t.text+'</span><button class="todo-del" onclick="delTodo('+t.id+')">x</button></div>';
+  }).join('');
 }
 
-// ══ POST-IT ══
-let postits=JSON.parse(localStorage.getItem('mci_postits')||'[]');
-const POSTIT_COLORS=['#fef08a','#bbf7d0','#bfdbfe','#fecaca','#e9d5ff'];
+// POST-IT
+var postits=JSON.parse(localStorage.getItem('mci_postits')||'[]');
+var piColors=['#fef08a','#bbf7d0','#bfdbfe','#fecaca','#e9d5ff'];
 function savePostits(){localStorage.setItem('mci_postits',JSON.stringify(postits));}
 function addPostit(){
-  const color=POSTIT_COLORS[postits.length%POSTIT_COLORS.length];
-  postits.push({id:Date.now(),text:'',color,x:10+postits.length*15,y:10+postits.length*15});
+  var color=piColors[postits.length%piColors.length];
+  postits.push({id:Date.now(),text:'',color:color,x:10,y:10+postits.length*20});
   savePostits();renderPostits();
 }
-function initDragListeners(){
-  const c=document.getElementById('postit-container');
-  if(!c||c._dragInit)return;
-  c._dragInit=true;
-  c.addEventListener('mousemove',moveDrag);
-  c.addEventListener('touchmove',moveDrag,{passive:false});
-  document.addEventListener('mouseup',()=>dragId=null);
-  document.addEventListener('touchend',()=>dragId=null);
-}
 function renderPostits(){
-  const c=document.getElementById('postit-container');
+  var c=document.getElementById('postit-container');
   if(!c)return;
-  c.innerHTML=postits.map(p=>`
-    <textarea class="postit" id="pt${p.id}" style="background:${p.color};left:${p.x}px;top:${p.y}px" 
-      onchange="updatePostit(${p.id},this.value)" 
-      onmousedown="startDrag(event,${p.id})"
-      ontouchstart="startDrag(event,${p.id})"
-      placeholder="Écris ici...">${p.text}</textarea>
-    <button onclick="delPostit(${p.id})" style="position:absolute;left:${p.x+115}px;top:${p.y-8}px;background:#ef4444;color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:.6rem;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center">✕</button>
-  `).join('');
+  c.innerHTML=postits.map(function(p){
+    return '<textarea class="postit" style="background:'+p.color+';left:'+p.x+'px;top:'+p.y+'px" onchange="updatePostit('+p.id+',this.value)" placeholder="Ecris ici...">'+p.text+'</textarea><button onclick="delPostit('+p.id+')" style="position:absolute;left:'+(p.x+115)+'px;top:'+(p.y-8)+'px;background:#ef4444;color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:.6rem;cursor:pointer;z-index:10">x</button>';
+  }).join('');
+  initDrag();
 }
-function updatePostit(id,val){const p=postits.find(p=>p.id===id);if(p){p.text=val;savePostits();}}
-function delPostit(id){postits=postits.filter(p=>p.id!==id);savePostits();renderPostits();}
-let dragId=null,dragOx=0,dragOy=0;
+function updatePostit(id,val){
+  var p=postits.find(function(p){return p.id===id;});
+  if(p){p.text=val;savePostits();}
+}
+function delPostit(id){
+  postits=postits.filter(function(p){return p.id!==id;});
+  savePostits();renderPostits();
+}
+var dragId=null,dragOx=0,dragOy=0;
+function initDrag(){
+  var c=document.getElementById('postit-container');
+  if(!c)return;
+  c.onmousemove=function(e){
+    if(!dragId)return;
+    var p=postits.find(function(p){return p.id===dragId;});
+    var r=c.getBoundingClientRect();
+    if(p){p.x=Math.max(0,e.clientX-r.left-dragOx);p.y=Math.max(0,e.clientY-r.top-dragOy);savePostits();renderPostits();}
+  };
+  c.onmouseup=function(){dragId=null;};
+}
 function startDrag(e,id){
   dragId=id;
-  const p=postits.find(p=>p.id===id);
-  const touch=e.touches?e.touches[0]:e;
-  const el=document.getElementById('pt'+id);
-  const rect=el.getBoundingClientRect();
-  dragOx=touch.clientX-rect.left;dragOy=touch.clientY-rect.top;
-}
-function moveDrag(e){
-  if(!dragId)return;
-  const touch=e.touches?e.touches[0]:e;
-  const c=document.getElementById('postit-container');
-  if(!c)return;
-  const rect=c.getBoundingClientRect();
-  const p=postits.find(p=>p.id===dragId);
-  if(p){p.x=Math.max(0,touch.clientX-rect.left-dragOx);p.y=Math.max(0,touch.clientY-rect.top-dragOy);savePostits();renderPostits();}
+  var el=document.querySelector('.postit[data-id="'+id+'"]');
+  if(el){var r=el.getBoundingClientRect();dragOx=e.clientX-r.left;dragOy=e.clientY-r.top;}
 }
 
-// ══ CORRECTEUR ORTHOGRAPHE & GRAMMAIRE ══
-const FAUTES_COMMUNES = [
-  {wrong:'sa va', right:'ca va', type:'spell', msg:'Confusion sa/ca -> ca va'},
-  {wrong:"c'est a dire", right:"c'est-a-dire", type:'gram', msg:'Tirets manquants -> c'est-a-dire'},
-  {wrong:'par ce que', right:'parce que', type:'spell', msg:'Parce que s'ecrit en un seul mot'},
-  {wrong:'au jourd'hui', right:"aujourd'hui", type:'spell', msg:'Aujourd'hui s'ecrit en un seul mot'},
-  {wrong:'parmis', right:'parmi', type:'spell', msg:'Parmi sans s final'},
-  {wrong:'malgres', right:'malgre', type:'spell', msg:'Malgre sans s final'},
-  {wrong:'vis a vis', right:'vis-a-vis', type:'gram', msg:'Vis-a-vis avec tirets'},
-  {wrong:'tout a fait', right:'tout a fait', type:'gram', msg:'Tout a fait - verifier les accents'},
-  {wrong:'aprEs que', right:'apres que + indicatif', type:'gram', msg:'Apres que -> mode indicatif'},
-  {wrong:'il faut que', right:'il faut que + subjonctif', type:'gram', msg:'Il faut que -> mode subjonctif'},
+// CORRECTEUR SIMPLE
+var corrTexte='';
+var FAUTES=[
+  {w:'sa va',r:'ca va',t:'spell',m:'sa va -> ca va'},
+  {w:"par ce que",r:'parce que',t:'spell',m:'parce que (un seul mot)'},
+  {w:'parmis',r:'parmi',t:'spell',m:'parmi (sans s)'},
+  {w:'malgres',r:'malgre',t:'spell',m:'malgre (sans s)'},
+  {w:'vis a vis',r:'vis-a-vis',t:'gram',m:'vis-a-vis (avec tirets)'},
+  {w:'tout les',r:'tous les',t:'gram',m:'tous les (accord)'},
+  {w:'apres que',r:'apres que + indicatif',t:'gram',m:'apres que -> indicatif'},
+  {w:'quoi que',r:'quoique',t:'spell',m:'quoique (un seul mot) si = bien que'},
 ];
-
-let corrTexte='';
 function correcteurLive(txt){
   corrTexte=txt;
-  if(!txt.trim()){document.getElementById('corr-preview').style.display='none';return;}
-  let html=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  FAUTES_COMMUNES.forEach(f=>{
-    html=html.replace(f.wrong,match=>`<span class="err-${f.type}" title="${f.msg}">${match}</span>`);
+  var prev=document.getElementById('corr-preview');
+  if(!txt.trim()){prev.style.display='none';return;}
+  var html=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  FAUTES.forEach(function(f){
+    var idx=html.toLowerCase().indexOf(f.w);
+    if(idx>=0){
+      var found=html.substring(idx,idx+f.w.length);
+      html=html.slice(0,idx)+'<span class="err-'+f.t+'" title="'+f.m+'">'+found+'</span>'+html.slice(idx+f.w.length);
+    }
   });
-  html=html.replace(/
-/g,'<br>');
-  const prev=document.getElementById('corr-preview');
-  prev.innerHTML='<div style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Aperçu — <span style="color:#dc2626">rouge</span> = orthographe · <span style="color:#d97706">orange</span> = grammaire</div>'+html;
+  prev.innerHTML='<div style="font-size:.68rem;color:var(--muted);margin-bottom:.4rem">Rouge=orthographe / Orange=grammaire</div>'+html;
   prev.style.display='block';
 }
 function corrigerTexte(){
   if(!corrTexte.trim()){toast('Ecris un texte a corriger');return;}
-  let corrected=corrTexte;
-  const suggestions=[];
-  FAUTES_COMMUNES.forEach(f=>{
-    if(corrected.toLowerCase().indexOf(f.wrong.toLowerCase())>=0){
-      suggestions.push({msg:f.msg,right:f.right});
-      const idx=corrected.toLowerCase().indexOf(f.wrong.toLowerCase());
-      if(f.right&&idx>=0)corrected=corrected.slice(0,idx)+f.right+corrected.slice(idx+f.wrong.length);
+  var corrected=corrTexte;
+  var suggs=[];
+  FAUTES.forEach(function(f){
+    var idx=corrected.toLowerCase().indexOf(f.w);
+    if(idx>=0){
+      suggs.push(f.m);
+      corrected=corrected.slice(0,idx)+f.r+corrected.slice(idx+f.w.length);
     }
   });
   document.getElementById('corr-input').value=corrected;
   corrTexte=corrected;
-  const sd=document.getElementById('corr-suggestions');
-  if(suggestions.length){
-    sd.innerHTML='<div style="font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:.5rem;letter-spacing:.05em;text-transform:uppercase">Corrections effectuées</div>'+
-      suggestions.map(s=>`<div class="sugg-box"><div class="sugg-title">${s.msg}</div>${s.right?`<div class="sugg-text">Correction : <span class="sugg-fix">${s.right}</span></div>`:''}</div>`).join('');
+  var sd=document.getElementById('corr-suggestions');
+  if(suggs.length){
+    sd.innerHTML='<div style="font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:.4rem">Corrections</div>'+
+      suggs.map(function(s){return '<div class="sugg-box">'+s+'</div>';}).join('');
   } else {
-    sd.innerHTML='<div style="font-size:.85rem;color:var(--green);padding:.5rem 0">✓ Aucune faute détectée !</div>';
+    sd.innerHTML='<div style="font-size:.85rem;color:var(--green);padding:.4rem 0">Aucune faute detectee !</div>';
   }
   correcteurLive(corrected);
-  toast('Texte corrigé !', true);
+  toast('Texte corrige !',true);
 }
 function copierCorrige(){
-  const txt=document.getElementById('corr-input').value;
-  if(!txt){toast('Rien à copier');return;}
-  navigator.clipboard.writeText(txt).then(()=>toast('Texte copié !',true)).catch(()=>{
-    const el=document.createElement('textarea');el.value=txt;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);toast('Texte copié !',true);
-  });
+  var txt=document.getElementById('corr-input').value;
+  if(!txt){toast('Rien a copier');return;}
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){toast('Copie !',true);});}
+  else{var el=document.createElement('textarea');el.value=txt;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);toast('Copie !',true);}
 }
 
-// ══ CONJUGAISON ══
-const CONJUGAISONS = {
-  aller:{
-    present:['vais','vas','va','allons','allez','vont'],
-    imparfait:['allais','allais','allait','allions','alliez','allaient'],
-    futur:['irai','iras','ira','irons','irez','iront'],
-    passe:['suis allé(e)','es allé(e)','est allé(e)','sommes allé(e)s','êtes allé(e)s','sont allé(e)s'],
-    conditionnel:['irais','irais','irait','irions','iriez','iraient'],
-    subjonctif:['aille','ailles','aille','allions','alliez','aillent'],
-  },
-  avoir:{
-    present:['ai','as','a','avons','avez','ont'],
-    imparfait:['avais','avais','avait','avions','aviez','avaient'],
-    futur:['aurai','auras','aura','aurons','aurez','auront'],
-    passe:['ai eu','as eu','a eu','avons eu','avez eu','ont eu'],
-    conditionnel:['aurais','aurais','aurait','aurions','auriez','auraient'],
-    subjonctif:['aie','aies','ait','ayons','ayez','aient'],
-  },
-  être:{
-    present:['suis','es','est','sommes','êtes','sont'],
-    imparfait:['étais','étais','était','étions','étiez','étaient'],
-    futur:['serai','seras','sera','serons','serez','seront'],
-    passe:['ai été','as été','a été','avons été','avez été','ont été'],
-    conditionnel:['serais','serais','serait','serions','seriez','seraient'],
-    subjonctif:['sois','sois','soit','soyons','soyez','soient'],
-  },
-  faire:{
-    present:['fais','fais','fait','faisons','faites','font'],
-    imparfait:['faisais','faisais','faisait','faisions','faisiez','faisaient'],
-    futur:['ferai','feras','fera','ferons','ferez','feront'],
-    passe:['ai fait','as fait','a fait','avons fait','avez fait','ont fait'],
-    conditionnel:['ferais','ferais','ferait','ferions','feriez','feraient'],
-    subjonctif:['fasse','fasses','fasse','fassions','fassiez','fassent'],
-  },
-  pouvoir:{
-    present:['peux','peux','peut','pouvons','pouvez','peuvent'],
-    imparfait:['pouvais','pouvais','pouvait','pouvions','pouviez','pouvaient'],
-    futur:['pourrai','pourras','pourra','pourrons','pourrez','pourront'],
-    passe:['ai pu','as pu','a pu','avons pu','avez pu','ont pu'],
-    conditionnel:['pourrais','pourrais','pourrait','pourrions','pourriez','pourraient'],
-    subjonctif:['puisse','puisses','puisse','puissions','puissiez','puissent'],
-  },
-  vouloir:{
-    present:['veux','veux','veut','voulons','voulez','veulent'],
-    imparfait:['voulais','voulais','voulait','voulions','vouliez','voulaient'],
-    futur:['voudrai','voudras','voudra','voudrons','voudrez','voudront'],
-    passe:['ai voulu','as voulu','a voulu','avons voulu','avez voulu','ont voulu'],
-    conditionnel:['voudrais','voudrais','voudrait','voudrions','voudriez','voudraient'],
-    subjonctif:['veuille','veuilles','veuille','voulions','vouliez','veuillent'],
-  },
-  savoir:{
-    present:['sais','sais','sait','savons','savez','savent'],
-    imparfait:['savais','savais','savait','savions','saviez','savaient'],
-    futur:['saurai','sauras','saura','saurons','saurez','sauront'],
-    passe:['ai su','as su','a su','avons su','avez su','ont su'],
-    conditionnel:['saurais','saurais','saurait','saurions','sauriez','sauraient'],
-    subjonctif:['sache','saches','sache','sachions','sachiez','sachent'],
-  },
-  venir:{
-    present:['viens','viens','vient','venons','venez','viennent'],
-    imparfait:['venais','venais','venait','venions','veniez','venaient'],
-    futur:['viendrai','viendras','viendra','viendrons','viendrez','viendront'],
-    passe:['suis venu(e)','es venu(e)','est venu(e)','sommes venu(e)s','êtes venu(e)s','sont venu(e)s'],
-    conditionnel:['viendrais','viendrais','viendrait','viendrions','viendriez','viendraient'],
-    subjonctif:['vienne','viennes','vienne','venions','veniez','viennent'],
-  },
+// CONJUGAISON
+var CONJ={
+  aller:{present:['vais','vas','va','allons','allez','vont'],imparfait:['allais','allais','allait','allions','alliez','allaient'],futur:['irai','iras','ira','irons','irez','iront'],passe:['suis alle(e)','es alle(e)','est alle(e)','sommes alle(e)s','etes alle(e)s','sont alle(e)s'],conditionnel:['irais','irais','irait','irions','iriez','iraient'],subjonctif:['aille','ailles','aille','allions','alliez','aillent']},
+  avoir:{present:['ai','as','a','avons','avez','ont'],imparfait:['avais','avais','avait','avions','aviez','avaient'],futur:['aurai','auras','aura','aurons','aurez','auront'],passe:['ai eu','as eu','a eu','avons eu','avez eu','ont eu'],conditionnel:['aurais','aurais','aurait','aurions','auriez','auraient'],subjonctif:['aie','aies','ait','ayons','ayez','aient']},
+  etre:{present:['suis','es','est','sommes','etes','sont'],imparfait:['etais','etais','etait','etions','etiez','etaient'],futur:['serai','seras','sera','serons','serez','seront'],passe:['ai ete','as ete','a ete','avons ete','avez ete','ont ete'],conditionnel:['serais','serais','serait','serions','seriez','seraient'],subjonctif:['sois','sois','soit','soyons','soyez','soient']},
+  faire:{present:['fais','fais','fait','faisons','faites','font'],imparfait:['faisais','faisais','faisait','faisions','faisiez','faisaient'],futur:['ferai','feras','fera','ferons','ferez','feront'],passe:['ai fait','as fait','a fait','avons fait','avez fait','ont fait'],conditionnel:['ferais','ferais','ferait','ferions','feriez','feraient'],subjonctif:['fasse','fasses','fasse','fassions','fassiez','fassent']},
+  pouvoir:{present:['peux','peux','peut','pouvons','pouvez','peuvent'],imparfait:['pouvais','pouvais','pouvait','pouvions','pouviez','pouvaient'],futur:['pourrai','pourras','pourra','pourrons','pourrez','pourront'],passe:['ai pu','as pu','a pu','avons pu','avez pu','ont pu'],conditionnel:['pourrais','pourrais','pourrait','pourrions','pourriez','pourraient'],subjonctif:['puisse','puisses','puisse','puissions','puissiez','puissent']},
+  vouloir:{present:['veux','veux','veut','voulons','voulez','veulent'],imparfait:['voulais','voulais','voulait','voulions','vouliez','voulaient'],futur:['voudrai','voudras','voudra','voudrons','voudrez','voudront'],passe:['ai voulu','as voulu','a voulu','avons voulu','avez voulu','ont voulu'],conditionnel:['voudrais','voudrais','voudrait','voudrions','voudriez','voudraient'],subjonctif:['veuille','veuilles','veuille','voulions','vouliez','veuillent']},
+  savoir:{present:['sais','sais','sait','savons','savez','savent'],imparfait:['savais','savais','savait','savions','saviez','savaient'],futur:['saurai','sauras','saura','saurons','saurez','sauront'],passe:['ai su','as su','a su','avons su','avez su','ont su'],conditionnel:['saurais','saurais','saurait','saurions','sauriez','sauraient'],subjonctif:['sache','saches','sache','sachions','sachiez','sachent']},
+  venir:{present:['viens','viens','vient','venons','venez','viennent'],imparfait:['venais','venais','venait','venions','veniez','venaient'],futur:['viendrai','viendras','viendra','viendrons','viendrez','viendront'],passe:['suis venu(e)','es venu(e)','est venu(e)','sommes venu(e)s','etes venu(e)s','sont venu(e)s'],conditionnel:['viendrais','viendrais','viendrait','viendrions','viendriez','viendraient'],subjonctif:['vienne','viennes','vienne','venions','veniez','viennent']},
 };
-const PRONOMS=['Je','Tu','Il/Elle','Nous','Vous','Ils/Elles'];
-const TEMPS_NOMS={present:'Présent',imparfait:'Imparfait',futur:'Futur simple',passe:'Passé composé',conditionnel:'Conditionnel présent',subjonctif:'Subjonctif présent'};
-
+var PRONOMS=['Je','Tu','Il/Elle','Nous','Vous','Ils/Elles'];
+var TEMPS_NOM={present:'Present',imparfait:'Imparfait',futur:'Futur simple',passe:'Passe compose',conditionnel:'Conditionnel',subjonctif:'Subjonctif'};
 function conjuguer(){
-  const verb=document.getElementById('conj-verb').value.trim().toLowerCase().replace(/[éèêë]/g,'e');
-  const temps=document.getElementById('conj-temps').value;
-  const el=document.getElementById('conj-result');
-  const data=CONJUGAISONS[verb];
+  var verb=document.getElementById('conj-verb').value.trim().toLowerCase();
+  var temps=document.getElementById('conj-temps').value;
+  var el=document.getElementById('conj-result');
+  var data=CONJ[verb];
   if(!data){
-    // Generate regular -er verb
-    if(verb.endsWith('er')){
-      const rad=verb.slice(0,-2);
-      const conjs={
-        present:[rad+'e',rad+'es',rad+'e',rad+'ons',rad+'ez',rad+'ent'],
-        imparfait:[rad+'ais',rad+'ais',rad+'ait',rad+'ions',rad+'iez',rad+'aient'],
-        futur:[verb+'ai',verb+'as',verb+'a',verb+'ons',verb+'ez',verb+'ont'],
-        passe:['ai '+rad+'é','as '+rad+'é','a '+rad+'é','avons '+rad+'é','avez '+rad+'é','ont '+rad+'é'],
-        conditionnel:[verb+'ais',verb+'ais',verb+'ait',verb+'ions',verb+'iez',verb+'aient'],
-        subjonctif:[rad+'e',rad+'es',rad+'e',rad+'ions',rad+'iez',rad+'ent'],
-      };
-      renderConj(verb, temps, conjs[temps]||conjs.present);
-    } else if(verb.endsWith('ir')){
-      const rad=verb.slice(0,-2);
-      const conjs={
-        present:[rad+'is',rad+'is',rad+'it',rad+'issons',rad+'issez',rad+'issent'],
-        imparfait:[rad+'issais',rad+'issais',rad+'issait',rad+'issions',rad+'issiez',rad+'issaient'],
-        futur:[verb+'ai',verb+'as',verb+'a',verb+'ons',verb+'ez',verb+'ont'],
-        passe:['ai '+rad+'i','as '+rad+'i','a '+rad+'i','avons '+rad+'i','avez '+rad+'i','ont '+rad+'i'],
-        conditionnel:[verb+'ais',verb+'ais',verb+'ait',verb+'ions',verb+'iez',verb+'aient'],
-        subjonctif:[rad+'isse',rad+'isses',rad+'isse',rad+'issions',rad+'issiez',rad+'issent'],
-      };
-      renderConj(verb, temps, conjs[temps]||conjs.present);
+    if(verb.slice(-2)==='er'){
+      var rad=verb.slice(0,-2);
+      data={present:[rad+'e',rad+'es',rad+'e',rad+'ons',rad+'ez',rad+'ent'],imparfait:[rad+'ais',rad+'ais',rad+'ait',rad+'ions',rad+'iez',rad+'aient'],futur:[verb+'ai',verb+'as',verb+'a',verb+'ons',verb+'ez',verb+'ont'],passe:['ai '+rad+'e','as '+rad+'e','a '+rad+'e','avons '+rad+'e','avez '+rad+'e','ont '+rad+'e'],conditionnel:[verb+'ais',verb+'ais',verb+'ait',verb+'ions',verb+'iez',verb+'aient'],subjonctif:[rad+'e',rad+'es',rad+'e',rad+'ions',rad+'iez',rad+'ent']};
+    } else if(verb.slice(-2)==='ir'){
+      var rad=verb.slice(0,-2);
+      data={present:[rad+'is',rad+'is',rad+'it',rad+'issons',rad+'issez',rad+'issent'],imparfait:[rad+'issais',rad+'issais',rad+'issait',rad+'issions',rad+'issiez',rad+'issaient'],futur:[verb+'ai',verb+'as',verb+'a',verb+'ons',verb+'ez',verb+'ont'],passe:['ai '+rad+'i','as '+rad+'i','a '+rad+'i','avons '+rad+'i','avez '+rad+'i','ont '+rad+'i'],conditionnel:[verb+'ais',verb+'ais',verb+'ait',verb+'ions',verb+'iez',verb+'aient'],subjonctif:[rad+'isse',rad+'isses',rad+'isse',rad+'issions',rad+'issiez',rad+'issent']};
     } else {
-      el.innerHTML='<div style="font-size:.83rem;color:var(--muted)">Verbe non trouvé. Essaie : aller, avoir, être, faire, pouvoir, vouloir, savoir, venir, ou un verbe en -er/-ir</div>';
+      el.innerHTML='<div style="font-size:.83rem;color:var(--muted)">Verbe non trouve. Essaie : aller avoir etre faire pouvoir vouloir savoir venir ou un verbe en -er/-ir</div>';return;
     }
-    return;
   }
-  renderConj(verb, temps, data[temps]||data.present);
-}
-function renderConj(verb, temps, formes){
-  const el=document.getElementById('conj-result');
-  const tn=TEMPS_NOMS[temps]||temps;
-  el.innerHTML=`<div style="font-family:var(--fd);font-size:.88rem;font-weight:700;margin-bottom:.5rem;color:var(--ink)">${verb.charAt(0).toUpperCase()+verb.slice(1)} — ${tn}</div>
-  <table class="conj-table">${PRONOMS.map((p,i)=>`<tr><td>${p}</td><td>${formes[i]||''}</td></tr>`).join('')}</table>`;
+  var formes=data[temps]||data.present;
+  var tn=TEMPS_NOM[temps]||temps;
+  el.innerHTML='<div style="font-family:var(--fd);font-size:.88rem;font-weight:700;margin-bottom:.5rem">'+verb+' - '+tn+'</div><table class="conj-table">'+PRONOMS.map(function(p,i){return '<tr><td>'+p+'</td><td>'+formes[i]+'</td></tr>';}).join('')+'</table>';
 }
 
 
