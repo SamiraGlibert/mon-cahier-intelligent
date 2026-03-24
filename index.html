@@ -231,14 +231,14 @@ input::placeholder,textarea::placeholder{color:rgba(15,14,12,0.28)}
   <input type="text" class="act-inp" id="act-inp" placeholder="SAG-XXXX-XXXX" maxlength="14" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')ca()">
   <div class="act-err" id="act-err"></div>
   <button class="act-btn" onclick="ca()">Activer</button>
-  <div style="font-size:.72rem;color:rgba(255,255,255,.2)">Pour obtenir une cle : 06 19 64 09 19<br>Samira Ait Aoudia Gibert</div>
+  <div style="font-size:.72rem;color:rgba(255,255,255,.2)">Pour obtenir une cle : 06 19 64 09 19<br>Samira Aït Aoudia Glibert</div>
 </div>
 
 <div id="legal-screen">
   <div class="li">
     <div class="ll">Mon <span>Cahier</span> Intelligent</div>
     <div class="lt">Conditions d utilisation</div>
-    <div class="lb"><span class="la">Samira Ait Aoudia Gibert</span>Application <strong>protegee</strong> par le droit d auteur francais (<strong>CPI, art. L111-1</strong>). Protection automatique des la creation.<br>App sur mesure : <strong>06 19 64 09 19</strong></div>
+    <div class="lb"><span class="la">Samira Aït Aoudia Glibert</span>Application <strong>protegee</strong> par le droit d auteur francais (<strong>CPI, art. L111-1</strong>). Protection automatique des la creation.<br>App sur mesure : <strong>06 19 64 09 19</strong></div>
     <div>
       <div style="font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.55rem">Autorise / Interdit</div>
       <ul class="lr">
@@ -260,10 +260,10 @@ input::placeholder,textarea::placeholder{color:rgba(15,14,12,0.28)}
     </div>
     <label class="lc-row" for="lcb">
       <input type="checkbox" id="lcb" onchange="tl()">
-      <span class="lc-lbl">J ai lu et j accepte. Je reconnais que cette application appartient a <strong>Samira Ait Aoudia Gibert</strong>, protegee par le droit d auteur francais.</span>
+      <span class="lc-lbl">J ai lu et j accepte. Je reconnais que cette application appartient a <strong>Samira Aït Aoudia Glibert</strong>, protegee par le droit d auteur francais.</span>
     </label>
     <button class="btn-leg" id="btnleg" onclick="ea()" disabled>Acceder a Mon Cahier Intelligent</button>
-    <div class="leg-footer">Samira Ait Aoudia Gibert - Tous droits reserves<br>CPI art. L111-1 L121-1 L335-2 - Convention de Berne</div>
+    <div class="leg-footer">Samira Aït Aoudia Glibert - Tous droits reserves<br>CPI art. L111-1 L121-1 L335-2 - Convention de Berne</div>
   </div>
 </div>
 
@@ -400,7 +400,7 @@ input::placeholder,textarea::placeholder{color:rgba(15,14,12,0.28)}
     </button>
   </nav>
   <div class="sig-bar">
-    <span>2025 <span style="color:rgba(255,255,255,.8);font-weight:500">Samira Ait Aoudia Gibert</span> - Tous droits reserves - CPI art. L111-1</span>
+    <span>2025 <span style="color:rgba(255,255,255,.8);font-weight:500">Samira Aït Aoudia Glibert</span> - Tous droits reserves - CPI art. L111-1</span>
     <span>App sur mesure ? <a href="tel:0619640919">06 19 64 09 19</a></span>
   </div>
 </div>
@@ -443,7 +443,7 @@ function ca(){
 }
 
 // LEGAL
-function sl(){document.getElementById('legal-screen').classList.add('show');const y=document.querySelector('.leg-footer');if(y)y.textContent='2025 Samira Ait Aoudia Gibert - Tous droits reserves - CPI art. L111-1';}
+function sl(){document.getElementById('legal-screen').classList.add('show');const y=document.querySelector('.leg-footer');if(y)y.textContent='2025 Samira Aït Aoudia Glibert - Tous droits reserves - CPI art. L111-1';}
 function tl(){const ok=document.getElementById('lcb').checked;const b=document.getElementById('btnleg');b.disabled=!ok;b.classList.toggle('rdy',ok);}
 function ea(){if(!document.getElementById('lcb').checked)return;localStorage.setItem(K.leg,'1');const ls=document.getElementById('legal-screen');ls.style.transition='opacity .35s';ls.style.opacity='0';setTimeout(()=>{ls.classList.remove('show');ls.style.opacity='';ia();},370);}
 
