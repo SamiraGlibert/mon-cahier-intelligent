@@ -204,6 +204,29 @@ input::placeholder,textarea::placeholder{color:rgba(15,14,12,0.28)}
 .ee{font-size:2.2rem;margin-bottom:.65rem}
 .et{font-family:var(--fd);font-size:1.05rem;font-weight:700}
 .ed2{font-size:.82rem;color:var(--muted);margin-top:.3rem;line-height:1.6}
+
+.cbtn{background:var(--cream);border:1px solid var(--line);border-radius:var(--radsm);padding:.7rem;font-size:1.1rem;font-family:var(--fb);font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.cbtn:active{transform:scale(.93)}
+.cbtn-fn{background:#e5e7eb;color:var(--ink)}
+.cbtn-op{background:var(--accent);color:white;border-color:var(--accent)}
+.cbtn-eq{background:var(--accent);color:white;border-color:var(--accent)}
+.todo-item{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--line2)}
+.todo-item:last-child{border-bottom:none}
+.todo-cb{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.todo-txt{flex:1;font-size:.88rem;color:var(--ink)}
+.todo-txt.done{text-decoration:line-through;color:var(--muted)}
+.todo-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.8rem;flex-shrink:0}
+.postit{position:absolute;width:140px;min-height:100px;border-radius:6px;padding:.6rem;font-size:.8rem;font-family:var(--fb);resize:both;overflow:auto;cursor:move;box-shadow:2px 2px 8px rgba(0,0,0,.15);border:none;outline:none;line-height:1.5}
+.err-spell{background:#fde8e8;border-bottom:2px solid #dc2626;border-radius:2px;padding:0 2px;cursor:pointer}
+.err-gram{background:#fef3c7;border-bottom:2px solid #d97706;border-radius:2px;padding:0 2px;cursor:pointer}
+.sugg-box{background:var(--cream);border-radius:var(--radsm);padding:.65rem .85rem;margin-bottom:.4rem;font-size:.82rem}
+.sugg-title{font-weight:700;color:var(--ink);margin-bottom:.25rem;font-size:.8rem}
+.sugg-text{color:var(--muted);line-height:1.5}
+.sugg-fix{color:var(--green);font-weight:600}
+.conj-table{width:100%;border-collapse:collapse}
+.conj-table td{padding:.4rem .6rem;font-size:.85rem;border-bottom:1px solid var(--line2)}
+.conj-table td:first-child{color:var(--muted);font-size:.78rem;width:40%}
+.conj-table td:last-child{font-weight:500;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -377,6 +400,89 @@ input::placeholder,textarea::placeholder{color:rgba(15,14,12,0.28)}
     <div id="mflp" style="display:none"><div class="es"><div class="ee">card</div><div class="et">Selectionnez une lecon</div></div></div>
   </div>
 
+
+  <!-- ════ OUTILS ════ -->
+  <div class="screen" id="screen-outils">
+    <div class="sec">Mes outils</div>
+
+    <!-- CALCULATRICE -->
+    <div style="background:var(--card);border-radius:var(--rad);border:1px solid var(--line);padding:1rem;margin-bottom:.75rem;box-shadow:var(--shadow)">
+      <div style="font-family:var(--fd);font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Calculatrice</div>
+      <div id="calc-display" style="background:var(--ink);color:white;border-radius:var(--radsm);padding:.75rem 1rem;font-family:monospace;font-size:1.5rem;text-align:right;margin-bottom:.6rem;min-height:3rem;word-break:break-all">0</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem">
+        <button class="cbtn cbtn-fn" onclick="calcFn('C')">C</button>
+        <button class="cbtn cbtn-fn" onclick="calcFn('+/-')">+/-</button>
+        <button class="cbtn cbtn-fn" onclick="calcFn('%')">%</button>
+        <button class="cbtn cbtn-op" onclick="calcOp('/')">÷</button>
+        <button class="cbtn" onclick="calcNum('7')">7</button>
+        <button class="cbtn" onclick="calcNum('8')">8</button>
+        <button class="cbtn" onclick="calcNum('9')">9</button>
+        <button class="cbtn cbtn-op" onclick="calcOp('*')">×</button>
+        <button class="cbtn" onclick="calcNum('4')">4</button>
+        <button class="cbtn" onclick="calcNum('5')">5</button>
+        <button class="cbtn" onclick="calcNum('6')">6</button>
+        <button class="cbtn cbtn-op" onclick="calcOp('-')">−</button>
+        <button class="cbtn" onclick="calcNum('1')">1</button>
+        <button class="cbtn" onclick="calcNum('2')">2</button>
+        <button class="cbtn" onclick="calcNum('3')">3</button>
+        <button class="cbtn cbtn-op" onclick="calcOp('+')">+</button>
+        <button class="cbtn" style="grid-column:span 2" onclick="calcNum('0')">0</button>
+        <button class="cbtn" onclick="calcNum('.')">.</button>
+        <button class="cbtn cbtn-eq" onclick="calcEq()">=</button>
+      </div>
+    </div>
+
+    <!-- TO-DO LIST -->
+    <div style="background:var(--card);border-radius:var(--rad);border:1px solid var(--line);padding:1rem;margin-bottom:.75rem;box-shadow:var(--shadow)">
+      <div style="font-family:var(--fd);font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">To-do list</div>
+      <div style="display:flex;gap:.5rem;margin-bottom:.75rem">
+        <input type="text" id="todo-inp" placeholder="Ajouter une tâche..." style="flex:1" onkeydown="if(event.key==='Enter')addTodo()">
+        <button class="btn ba" onclick="addTodo()" style="padding:.5rem .85rem">+</button>
+      </div>
+      <div id="todo-list"></div>
+    </div>
+
+    <!-- POST-IT -->
+    <div style="background:var(--card);border-radius:var(--rad);border:1px solid var(--line);padding:1rem;margin-bottom:.75rem;box-shadow:var(--shadow)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+        <div style="font-family:var(--fd);font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Post-it</div>
+        <button class="btn bg" style="font-size:.75rem;padding:.3rem .65rem" onclick="addPostit()">+ Nouveau</button>
+      </div>
+      <div id="postit-container" style="position:relative;min-height:200px;background:var(--cream);border-radius:var(--radsm);padding:.5rem"></div>
+    </div>
+
+    <!-- CORRECTEUR -->
+    <div style="background:var(--card);border-radius:var(--rad);border:1px solid var(--line);padding:1rem;margin-bottom:.75rem;box-shadow:var(--shadow)">
+      <div style="font-family:var(--fd);font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Correcteur orthographe & grammaire</div>
+      <textarea id="corr-input" rows="5" placeholder="Colle ou écris ton texte ici pour le corriger..." oninput="correcteurLive(this.value)" style="margin-bottom:.6rem"></textarea>
+      <div id="corr-preview" style="min-height:60px;background:var(--cream);border-radius:var(--radsm);padding:.75rem;font-size:.88rem;line-height:1.8;display:none;margin-bottom:.65rem"></div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn ba" onclick="corrigerTexte()">Corriger le texte</button>
+        <button class="btn bg" onclick="copierCorrige()">Copier le résultat</button>
+      </div>
+      <div id="corr-suggestions" style="margin-top:.75rem"></div>
+    </div>
+
+    <!-- CONJUGAISON -->
+    <div style="background:var(--card);border-radius:var(--rad);border:1px solid var(--line);padding:1rem;margin-bottom:.75rem;box-shadow:var(--shadow)">
+      <div style="font-family:var(--fd);font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Conjugaison</div>
+      <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap">
+        <input type="text" id="conj-verb" placeholder="Verbe (ex: aller, manger...)" style="flex:1;min-width:140px">
+        <select id="conj-temps" style="width:auto;min-width:130px">
+          <option value="present">Présent</option>
+          <option value="imparfait">Imparfait</option>
+          <option value="futur">Futur simple</option>
+          <option value="passe">Passé composé</option>
+          <option value="conditionnel">Conditionnel</option>
+          <option value="subjonctif">Subjonctif présent</option>
+        </select>
+        <button class="btn ba" onclick="conjuguer()">Conjuguer</button>
+      </div>
+      <div id="conj-result"></div>
+    </div>
+
+  </div>
+
   <nav class="bottomnav">
     <button class="navbtn active" id="nav-matieres" onclick="go('matieres')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
@@ -397,6 +503,10 @@ input::placeholder,textarea::placeholder{color:rgba(15,14,12,0.28)}
     <button class="navbtn" id="nav-memo" onclick="go('memo')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       Revision
+    </button>
+    <button class="navbtn" id="nav-outils" onclick="go('outils')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      Outils
     </button>
   </nav>
   <div class="sig-bar">
@@ -465,6 +575,7 @@ function go(s){
   if(s==='note')rmp();
   if(s==='notes'){rfp();ran();}
   if(s==='memo')ums();
+  if(s==='outils'){renderTodos();renderPostits();}
 }
 function gbn(){if(clm>=0){go('lessons');}else{go('matieres');}}
 
@@ -604,6 +715,275 @@ function rfc(){
   const fc=fcs[cc];
   a.innerHTML=`<div class="fco"><div class="fci" id="fcard" onclick="this.classList.toggle('fl')"><div class="fcf fcfront"><div class="fclbl">Question ${cc+1}/${fcs.length}</div><div class="fctxt">${fc.q}</div><div class="fchint">Appuie pour la reponse</div></div><div class="fcf fcback"><div class="fclbl">Reponse</div><div class="fctxt">${fc.a}</div></div></div></div><div class="fcnav"><button class="btn bg" style="padding:.42rem 1rem" onclick="if(cc>0){cc--;rfc();}" ${cc===0?'disabled':''}>retour</button><span class="fcctr">${cc+1} / ${fcs.length}</span><button class="btn bg" style="padding:.42rem 1rem" onclick="if(cc<fcs.length-1){cc++;rfc();}" ${cc===fcs.length-1?'disabled':''}>suivant</button></div>`;
 }
+
+
+// ══ CALCULATRICE ══
+let calcVal='0', calcOp2='', calcPrev='', calcNew=false;
+function calcNum(n){
+  if(calcNew){calcVal=n;calcNew=false;}
+  else{calcVal=calcVal==='0'?n:calcVal+n;}
+  document.getElementById('calc-display').textContent=calcVal;
+}
+function calcOp(op){
+  calcPrev=calcVal;calcOp2=op;calcNew=true;
+  document.getElementById('calc-display').textContent=calcVal+' '+{'+':'+','−':'-','*':'×','/':'÷'}[op];
+}
+function calcEq(){
+  if(!calcOp2||!calcPrev)return;
+  const a=parseFloat(calcPrev),b=parseFloat(calcVal);
+  let r;
+  if(calcOp2==='+')r=a+b;else if(calcOp2==='-')r=a-b;else if(calcOp2==='*')r=a*b;else if(calcOp2==='/')r=b!==0?a/b:'Erreur';
+  calcVal=typeof r==='number'?parseFloat(r.toFixed(10)).toString():r;
+  calcOp2='';calcPrev='';calcNew=true;
+  document.getElementById('calc-display').textContent=calcVal;
+}
+function calcFn(fn){
+  if(fn==='C'){calcVal='0';calcOp2='';calcPrev='';calcNew=false;document.getElementById('calc-display').textContent='0';}
+  else if(fn==='+/-'){calcVal=String(-parseFloat(calcVal));document.getElementById('calc-display').textContent=calcVal;}
+  else if(fn==='%'){calcVal=String(parseFloat(calcVal)/100);document.getElementById('calc-display').textContent=calcVal;}
+}
+
+// ══ TO-DO LIST ══
+let todos=JSON.parse(localStorage.getItem('mci_todos')||'[]');
+function saveTodos(){localStorage.setItem('mci_todos',JSON.stringify(todos));}
+function addTodo(){
+  const v=document.getElementById('todo-inp').value.trim();
+  if(!v)return;
+  todos.push({id:Date.now(),text:v,done:false});
+  saveTodos();renderTodos();
+  document.getElementById('todo-inp').value='';
+}
+function toggleTodo(id){const t=todos.find(t=>t.id===id);if(t){t.done=!t.done;saveTodos();renderTodos();}}
+function delTodo(id){todos=todos.filter(t=>t.id!==id);saveTodos();renderTodos();}
+function renderTodos(){
+  const el=document.getElementById('todo-list');
+  if(!todos.length){el.innerHTML='<div style="font-size:.82rem;color:var(--muted);text-align:center;padding:.75rem">Aucune tâche — ajoutes-en une !</div>';return;}
+  el.innerHTML=todos.map(t=>`<div class="todo-item"><input type="checkbox" class="todo-cb" ${t.done?'checked':''} onchange="toggleTodo(${t.id})"><span class="todo-txt ${t.done?'done':''}">${t.text}</span><button class="todo-del" onclick="delTodo(${t.id})">✕</button></div>`).join('');
+}
+
+// ══ POST-IT ══
+let postits=JSON.parse(localStorage.getItem('mci_postits')||'[]');
+const POSTIT_COLORS=['#fef08a','#bbf7d0','#bfdbfe','#fecaca','#e9d5ff'];
+function savePostits(){localStorage.setItem('mci_postits',JSON.stringify(postits));}
+function addPostit(){
+  const color=POSTIT_COLORS[postits.length%POSTIT_COLORS.length];
+  postits.push({id:Date.now(),text:'',color,x:10+postits.length*15,y:10+postits.length*15});
+  savePostits();renderPostits();
+}
+function renderPostits(){
+  const c=document.getElementById('postit-container');
+  if(!c)return;
+  c.innerHTML=postits.map(p=>`
+    <textarea class="postit" id="pt${p.id}" style="background:${p.color};left:${p.x}px;top:${p.y}px" 
+      onchange="updatePostit(${p.id},this.value)" 
+      onmousedown="startDrag(event,${p.id})"
+      ontouchstart="startDrag(event,${p.id})"
+      placeholder="Écris ici...">${p.text}</textarea>
+    <button onclick="delPostit(${p.id})" style="position:absolute;left:${p.x+115}px;top:${p.y-8}px;background:#ef4444;color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:.6rem;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center">✕</button>
+  `).join('');
+}
+function updatePostit(id,val){const p=postits.find(p=>p.id===id);if(p){p.text=val;savePostits();}}
+function delPostit(id){postits=postits.filter(p=>p.id!==id);savePostits();renderPostits();}
+let dragId=null,dragOx=0,dragOy=0;
+function startDrag(e,id){
+  dragId=id;
+  const p=postits.find(p=>p.id===id);
+  const touch=e.touches?e.touches[0]:e;
+  const el=document.getElementById('pt'+id);
+  const rect=el.getBoundingClientRect();
+  dragOx=touch.clientX-rect.left;dragOy=touch.clientY-rect.top;
+}
+document.addEventListener('mousemove',moveDrag);document.addEventListener('touchmove',moveDrag,{passive:false});
+document.addEventListener('mouseup',()=>dragId=null);document.addEventListener('touchend',()=>dragId=null);
+function moveDrag(e){
+  if(!dragId)return;
+  e.preventDefault();
+  const touch=e.touches?e.touches[0]:e;
+  const c=document.getElementById('postit-container');
+  if(!c)return;
+  const rect=c.getBoundingClientRect();
+  const p=postits.find(p=>p.id===dragId);
+  if(p){p.x=Math.max(0,touch.clientX-rect.left-dragOx);p.y=Math.max(0,touch.clientY-rect.top-dragOy);savePostits();renderPostits();}
+}
+
+// ══ CORRECTEUR ORTHOGRAPHE & GRAMMAIRE ══
+const FAUTES_COMMUNES = [
+  {wrong:/sa\s+va/gi, right:'ça va', type:'spell', msg:'Confusion sa/ça'},
+  {wrong:/c'est\s+a\s+dire/gi, right:"c'est-à-dire", type:'gram', msg:'Tirets manquants'},
+  {wrong:/par\s+ce\s+que/gi, right:'parce que', type:'spell', msg:'Parce que s'écrit en un seul mot'},
+  {wrong:/peux\s+t'il/gi, right:'peut-il', type:'gram', msg:'Peut-il (peut + tiret)'},
+  {wrong:/au\s+jourd'hui/gi, right:"aujourd'hui", type:'spell', msg:'Aujourd'hui s'écrit en un seul mot'},
+  {wrong:/a(?!\s*[0-9])/g, right:'à ou a', type:'gram', msg:'Confusion a/à : a = avoir, à = préposition'},
+  {wrong:/son\s+t/gi, right:'sont', type:'spell', msg:'Sont (verbe être)'},
+  {wrong:/sont\s+(?=un|une|le|la|les|des|mon|ma|mes)/gi, right:'son', type:'gram', msg:'Son ou sont ?'},
+  {wrong:/quand\s+même/gi, right:'quand même', type:'spell', msg:'Quand même (deux mots)'},
+  {wrong:/vis\s+à\s+vis/gi, right:'vis-à-vis', type:'gram', msg:'Vis-à-vis avec tirets'},
+  {wrong:/quelqu'un/gi, right:"quelqu'un", type:'spell', msg:'Quelqu'un avec apostrophe'},
+  {wrong:/on\s+t'/gi, right:'ont', type:'gram', msg:'Ont (avoir) ou on (pronom) ?'},
+  {wrong:/malgres/gi, right:'malgré', type:'spell', msg:'Malgré sans s'},
+  {wrong:/parmis/gi, right:'parmi', type:'spell', msg:'Parmi sans s'},
+  {wrong:/après\s+que.*subjonctif/gi, right:'après que + indicatif', type:'gram', msg:'Après que → indicatif (pas subjonctif)'},
+  {wrong:/(\w+)er.*é/gi, right:'', type:'gram', msg:'Infinitif ou participe passé ?'},
+];
+
+let corrTexte='';
+function correcteurLive(txt){
+  corrTexte=txt;
+  if(!txt.trim()){document.getElementById('corr-preview').style.display='none';return;}
+  let html=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  FAUTES_COMMUNES.forEach(f=>{
+    html=html.replace(f.wrong,match=>`<span class="err-${f.type}" title="${f.msg}">${match}</span>`);
+  });
+  html=html.replace(/
+/g,'<br>');
+  const prev=document.getElementById('corr-preview');
+  prev.innerHTML='<div style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Aperçu — <span style="color:#dc2626">rouge</span> = orthographe · <span style="color:#d97706">orange</span> = grammaire</div>'+html;
+  prev.style.display='block';
+}
+function corrigerTexte(){
+  if(!corrTexte.trim()){toast('Écris un texte à corriger');return;}
+  let corrected=corrTexte;
+  const suggestions=[];
+  FAUTES_COMMUNES.forEach(f=>{
+    if(f.wrong.test(corrected)){
+      suggestions.push({msg:f.msg,right:f.right});
+      if(f.right)corrected=corrected.replace(f.wrong,f.right);
+    }
+    f.wrong.lastIndex=0;
+  });
+  document.getElementById('corr-input').value=corrected;
+  corrTexte=corrected;
+  const sd=document.getElementById('corr-suggestions');
+  if(suggestions.length){
+    sd.innerHTML='<div style="font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:.5rem;letter-spacing:.05em;text-transform:uppercase">Corrections effectuées</div>'+
+      suggestions.map(s=>`<div class="sugg-box"><div class="sugg-title">${s.msg}</div>${s.right?`<div class="sugg-text">Correction : <span class="sugg-fix">${s.right}</span></div>`:''}</div>`).join('');
+  } else {
+    sd.innerHTML='<div style="font-size:.85rem;color:var(--green);padding:.5rem 0">✓ Aucune faute détectée !</div>';
+  }
+  correcteurLive(corrected);
+  toast('Texte corrigé !', true);
+}
+function copierCorrige(){
+  const txt=document.getElementById('corr-input').value;
+  if(!txt){toast('Rien à copier');return;}
+  navigator.clipboard.writeText(txt).then(()=>toast('Texte copié !',true)).catch(()=>{
+    const el=document.createElement('textarea');el.value=txt;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);toast('Texte copié !',true);
+  });
+}
+
+// ══ CONJUGAISON ══
+const CONJUGAISONS = {
+  aller:{
+    present:['vais','vas','va','allons','allez','vont'],
+    imparfait:['allais','allais','allait','allions','alliez','allaient'],
+    futur:['irai','iras','ira','irons','irez','iront'],
+    passe:['suis allé(e)','es allé(e)','est allé(e)','sommes allé(e)s','êtes allé(e)s','sont allé(e)s'],
+    conditionnel:['irais','irais','irait','irions','iriez','iraient'],
+    subjonctif:['aille','ailles','aille','allions','alliez','aillent'],
+  },
+  avoir:{
+    present:['ai','as','a','avons','avez','ont'],
+    imparfait:['avais','avais','avait','avions','aviez','avaient'],
+    futur:['aurai','auras','aura','aurons','aurez','auront'],
+    passe:['ai eu','as eu','a eu','avons eu','avez eu','ont eu'],
+    conditionnel:['aurais','aurais','aurait','aurions','auriez','auraient'],
+    subjonctif:['aie','aies','ait','ayons','ayez','aient'],
+  },
+  être:{
+    present:['suis','es','est','sommes','êtes','sont'],
+    imparfait:['étais','étais','était','étions','étiez','étaient'],
+    futur:['serai','seras','sera','serons','serez','seront'],
+    passe:['ai été','as été','a été','avons été','avez été','ont été'],
+    conditionnel:['serais','serais','serait','serions','seriez','seraient'],
+    subjonctif:['sois','sois','soit','soyons','soyez','soient'],
+  },
+  faire:{
+    present:['fais','fais','fait','faisons','faites','font'],
+    imparfait:['faisais','faisais','faisait','faisions','faisiez','faisaient'],
+    futur:['ferai','feras','fera','ferons','ferez','feront'],
+    passe:['ai fait','as fait','a fait','avons fait','avez fait','ont fait'],
+    conditionnel:['ferais','ferais','ferait','ferions','feriez','feraient'],
+    subjonctif:['fasse','fasses','fasse','fassions','fassiez','fassent'],
+  },
+  pouvoir:{
+    present:['peux','peux','peut','pouvons','pouvez','peuvent'],
+    imparfait:['pouvais','pouvais','pouvait','pouvions','pouviez','pouvaient'],
+    futur:['pourrai','pourras','pourra','pourrons','pourrez','pourront'],
+    passe:['ai pu','as pu','a pu','avons pu','avez pu','ont pu'],
+    conditionnel:['pourrais','pourrais','pourrait','pourrions','pourriez','pourraient'],
+    subjonctif:['puisse','puisses','puisse','puissions','puissiez','puissent'],
+  },
+  vouloir:{
+    present:['veux','veux','veut','voulons','voulez','veulent'],
+    imparfait:['voulais','voulais','voulait','voulions','vouliez','voulaient'],
+    futur:['voudrai','voudras','voudra','voudrons','voudrez','voudront'],
+    passe:['ai voulu','as voulu','a voulu','avons voulu','avez voulu','ont voulu'],
+    conditionnel:['voudrais','voudrais','voudrait','voudrions','voudriez','voudraient'],
+    subjonctif:['veuille','veuilles','veuille','voulions','vouliez','veuillent'],
+  },
+  savoir:{
+    present:['sais','sais','sait','savons','savez','savent'],
+    imparfait:['savais','savais','savait','savions','saviez','savaient'],
+    futur:['saurai','sauras','saura','saurons','saurez','sauront'],
+    passe:['ai su','as su','a su','avons su','avez su','ont su'],
+    conditionnel:['saurais','saurais','saurait','saurions','sauriez','sauraient'],
+    subjonctif:['sache','saches','sache','sachions','sachiez','sachent'],
+  },
+  venir:{
+    present:['viens','viens','vient','venons','venez','viennent'],
+    imparfait:['venais','venais','venait','venions','veniez','venaient'],
+    futur:['viendrai','viendras','viendra','viendrons','viendrez','viendront'],
+    passe:['suis venu(e)','es venu(e)','est venu(e)','sommes venu(e)s','êtes venu(e)s','sont venu(e)s'],
+    conditionnel:['viendrais','viendrais','viendrait','viendrions','viendriez','viendraient'],
+    subjonctif:['vienne','viennes','vienne','venions','veniez','viennent'],
+  },
+};
+const PRONOMS=['Je','Tu','Il/Elle','Nous','Vous','Ils/Elles'];
+const TEMPS_NOMS={present:'Présent',imparfait:'Imparfait',futur:'Futur simple',passe:'Passé composé',conditionnel:'Conditionnel présent',subjonctif:'Subjonctif présent'};
+
+function conjuguer(){
+  const verb=document.getElementById('conj-verb').value.trim().toLowerCase().replace(/[éèêë]/g,'e');
+  const temps=document.getElementById('conj-temps').value;
+  const el=document.getElementById('conj-result');
+  const data=CONJUGAISONS[verb];
+  if(!data){
+    // Generate regular -er verb
+    if(verb.endsWith('er')){
+      const rad=verb.slice(0,-2);
+      const conjs={
+        present:[rad+'e',rad+'es',rad+'e',rad+'ons',rad+'ez',rad+'ent'],
+        imparfait:[rad+'ais',rad+'ais',rad+'ait',rad+'ions',rad+'iez',rad+'aient'],
+        futur:[verb+'ai',verb+'as',verb+'a',verb+'ons',verb+'ez',verb+'ont'],
+        passe:['ai '+rad+'é','as '+rad+'é','a '+rad+'é','avons '+rad+'é','avez '+rad+'é','ont '+rad+'é'],
+        conditionnel:[verb+'ais',verb+'ais',verb+'ait',verb+'ions',verb+'iez',verb+'aient'],
+        subjonctif:[rad+'e',rad+'es',rad+'e',rad+'ions',rad+'iez',rad+'ent'],
+      };
+      renderConj(verb, temps, conjs[temps]||conjs.present);
+    } else if(verb.endsWith('ir')){
+      const rad=verb.slice(0,-2);
+      const conjs={
+        present:[rad+'is',rad+'is',rad+'it',rad+'issons',rad+'issez',rad+'issent'],
+        imparfait:[rad+'issais',rad+'issais',rad+'issait',rad+'issions',rad+'issiez',rad+'issaient'],
+        futur:[verb+'ai',verb+'as',verb+'a',verb+'ons',verb+'ez',verb+'ont'],
+        passe:['ai '+rad+'i','as '+rad+'i','a '+rad+'i','avons '+rad+'i','avez '+rad+'i','ont '+rad+'i'],
+        conditionnel:[verb+'ais',verb+'ais',verb+'ait',verb+'ions',verb+'iez',verb+'aient'],
+        subjonctif:[rad+'isse',rad+'isses',rad+'isse',rad+'issions',rad+'issiez',rad+'issent'],
+      };
+      renderConj(verb, temps, conjs[temps]||conjs.present);
+    } else {
+      el.innerHTML='<div style="font-size:.83rem;color:var(--muted)">Verbe non trouvé. Essaie : aller, avoir, être, faire, pouvoir, vouloir, savoir, venir, ou un verbe en -er/-ir</div>';
+    }
+    return;
+  }
+  renderConj(verb, temps, data[temps]||data.present);
+}
+function renderConj(verb, temps, formes){
+  const el=document.getElementById('conj-result');
+  const tn=TEMPS_NOMS[temps]||temps;
+  el.innerHTML=`<div style="font-family:var(--fd);font-size:.88rem;font-weight:700;margin-bottom:.5rem;color:var(--ink)">${verb.charAt(0).toUpperCase()+verb.slice(1)} — ${tn}</div>
+  <table class="conj-table">${PRONOMS.map((p,i)=>`<tr><td>${p}</td><td>${formes[i]||''}</td></tr>`).join('')}</table>`;
+}
+
 
 initPin();
 </script>
