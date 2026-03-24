@@ -814,22 +814,16 @@ function moveDrag(e){
 
 // ══ CORRECTEUR ORTHOGRAPHE & GRAMMAIRE ══
 const FAUTES_COMMUNES = [
-  {wrong:/sa\s+va/gi, right:'ça va', type:'spell', msg:'Confusion sa/ça'},
-  {wrong:/c'est\s+a\s+dire/gi, right:"c'est-à-dire", type:'gram', msg:'Tirets manquants'},
-  {wrong:/par\s+ce\s+que/gi, right:'parce que', type:'spell', msg:'Parce que s'écrit en un seul mot'},
-  {wrong:/peux\s+t'il/gi, right:'peut-il', type:'gram', msg:'Peut-il (peut + tiret)'},
-  {wrong:/au\s+jourd'hui/gi, right:"aujourd'hui", type:'spell', msg:'Aujourd'hui s'écrit en un seul mot'},
-  {wrong:/a(?!\s*[0-9])/g, right:'à ou a', type:'gram', msg:'Confusion a/à : a = avoir, à = préposition'},
-  {wrong:/son\s+t/gi, right:'sont', type:'spell', msg:'Sont (verbe être)'},
-  {wrong:/sont\s+(?=un|une|le|la|les|des|mon|ma|mes)/gi, right:'son', type:'gram', msg:'Son ou sont ?'},
-  {wrong:/quand\s+même/gi, right:'quand même', type:'spell', msg:'Quand même (deux mots)'},
-  {wrong:/vis\s+à\s+vis/gi, right:'vis-à-vis', type:'gram', msg:'Vis-à-vis avec tirets'},
-  {wrong:/quelqu'un/gi, right:"quelqu'un", type:'spell', msg:'Quelqu'un avec apostrophe'},
-  {wrong:/on\s+t'/gi, right:'ont', type:'gram', msg:'Ont (avoir) ou on (pronom) ?'},
-  {wrong:/malgres/gi, right:'malgré', type:'spell', msg:'Malgré sans s'},
-  {wrong:/parmis/gi, right:'parmi', type:'spell', msg:'Parmi sans s'},
-  {wrong:/après\s+que.*subjonctif/gi, right:'après que + indicatif', type:'gram', msg:'Après que → indicatif (pas subjonctif)'},
-  {wrong:/(\w+)er.*é/gi, right:'', type:'gram', msg:'Infinitif ou participe passé ?'},
+  {wrong:'sa va', right:'ca va', type:'spell', msg:'Confusion sa/ca -> ca va'},
+  {wrong:"c'est a dire", right:"c'est-a-dire", type:'gram', msg:'Tirets manquants -> c'est-a-dire'},
+  {wrong:'par ce que', right:'parce que', type:'spell', msg:'Parce que s'ecrit en un seul mot'},
+  {wrong:'au jourd'hui', right:"aujourd'hui", type:'spell', msg:'Aujourd'hui s'ecrit en un seul mot'},
+  {wrong:'parmis', right:'parmi', type:'spell', msg:'Parmi sans s final'},
+  {wrong:'malgres', right:'malgre', type:'spell', msg:'Malgre sans s final'},
+  {wrong:'vis a vis', right:'vis-a-vis', type:'gram', msg:'Vis-a-vis avec tirets'},
+  {wrong:'tout a fait', right:'tout a fait', type:'gram', msg:'Tout a fait - verifier les accents'},
+  {wrong:'aprEs que', right:'apres que + indicatif', type:'gram', msg:'Apres que -> mode indicatif'},
+  {wrong:'il faut que', right:'il faut que + subjonctif', type:'gram', msg:'Il faut que -> mode subjonctif'},
 ];
 
 let corrTexte='';
@@ -847,15 +841,15 @@ function correcteurLive(txt){
   prev.style.display='block';
 }
 function corrigerTexte(){
-  if(!corrTexte.trim()){toast('Écris un texte à corriger');return;}
+  if(!corrTexte.trim()){toast('Ecris un texte a corriger');return;}
   let corrected=corrTexte;
   const suggestions=[];
   FAUTES_COMMUNES.forEach(f=>{
-    if(f.wrong.test(corrected)){
+    if(corrected.toLowerCase().indexOf(f.wrong.toLowerCase())>=0){
       suggestions.push({msg:f.msg,right:f.right});
-      if(f.right)corrected=corrected.replace(f.wrong,f.right);
+      const idx=corrected.toLowerCase().indexOf(f.wrong.toLowerCase());
+      if(f.right&&idx>=0)corrected=corrected.slice(0,idx)+f.right+corrected.slice(idx+f.wrong.length);
     }
-    f.wrong.lastIndex=0;
   });
   document.getElementById('corr-input').value=corrected;
   corrTexte=corrected;
