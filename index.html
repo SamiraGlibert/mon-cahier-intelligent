@@ -575,7 +575,7 @@ function go(s){
   if(s==='note')rmp();
   if(s==='notes'){rfp();ran();}
   if(s==='memo')ums();
-  if(s==='outils'){renderTodos();renderPostits();}
+  if(s==='outils'){renderTodos();renderPostits();setTimeout(initDragListeners,100);}
 }
 function gbn(){if(clm>=0){go('lessons');}else{go('matieres');}}
 
@@ -770,6 +770,15 @@ function addPostit(){
   postits.push({id:Date.now(),text:'',color,x:10+postits.length*15,y:10+postits.length*15});
   savePostits();renderPostits();
 }
+function initDragListeners(){
+  const c=document.getElementById('postit-container');
+  if(!c||c._dragInit)return;
+  c._dragInit=true;
+  c.addEventListener('mousemove',moveDrag);
+  c.addEventListener('touchmove',moveDrag,{passive:false});
+  document.addEventListener('mouseup',()=>dragId=null);
+  document.addEventListener('touchend',()=>dragId=null);
+}
 function renderPostits(){
   const c=document.getElementById('postit-container');
   if(!c)return;
@@ -793,11 +802,8 @@ function startDrag(e,id){
   const rect=el.getBoundingClientRect();
   dragOx=touch.clientX-rect.left;dragOy=touch.clientY-rect.top;
 }
-document.addEventListener('mousemove',moveDrag);document.addEventListener('touchmove',moveDrag,{passive:false});
-document.addEventListener('mouseup',()=>dragId=null);document.addEventListener('touchend',()=>dragId=null);
 function moveDrag(e){
   if(!dragId)return;
-  e.preventDefault();
   const touch=e.touches?e.touches[0]:e;
   const c=document.getElementById('postit-container');
   if(!c)return;
